@@ -275,6 +275,76 @@ principal / principal<br><br>
 <div id="chart"></div>
 </div>
 </section>
+<h2>Student Manager</h2>
 
+<input type="text" id="studentName" placeholder="Enter student name">
+<button onclick="addStudent()">Add Student</button>
+
+<br><br>
+
+<input type="text" id="searchBox" placeholder="Search student" onkeyup="searchStudent()">
+
+<ul id="studentList"></ul>
+
+<script>
+
+let students = [];
+
+function addStudent() {
+
+  let name = document.getElementById("studentName").value;
+
+  if(name === "") return;
+
+  students.push(name);
+
+  document.getElementById("studentName").value = "";
+
+  showStudents();
+}
+
+function showStudents(){
+
+  let list = document.getElementById("studentList");
+
+  list.innerHTML = "";
+
+  students.forEach(function(student){
+
+    let li = document.createElement("li");
+
+    li.innerText = student;
+
+    list.appendChild(li);
+
+  });
+
+}
+
+function searchStudent(){
+
+  let input = document.getElementById("searchBox").value.toLowerCase();
+
+  let list = document.getElementById("studentList").getElementsByTagName("li");
+
+  for(let i=0;i<list.length;i++){
+
+    let txt = list[i].innerText.toLowerCase();
+
+    if(txt.includes(input)){
+
+      list[i].style.display = "";
+
+    } else {
+
+      list[i].style.display = "none";
+
+    }
+
+  }
+
+}
+
+</script>
 </body>
 </html>
