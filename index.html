@@ -1,350 +1,223 @@
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Raika School Management Hub v11.1</title>
-<style>
-body{font-family:Arial;margin:0;background:#eef3f8}
-header{background:#2e86de;color:white;text-align:center;padding:20px}
-nav{background:#1b4f72;padding:10px;text-align:center}
-nav a{color:white;margin:10px;font-weight:bold;cursor:pointer}
-section{display:none;padding:25px}
-.active{display:block}
-.card{background:white;padding:20px;border-radius:10px;max-width:1000px;margin:auto}
-.student{display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid #eee}
-button{padding:8px 14px;margin:5px}
-.bar{background:#2e86de;height:20px;margin:4px 0}
-.captcha{background:#eee;padding:6px;font-weight:bold;letter-spacing:3px;display:inline-block}
-</style>
-
 <script>
 
-let students = {"Playgroup-A": ["Riya", "Krishna", "Vivaan", "Saanvi", "Myra", "Ishaan", "Kabir", "Pooja"], "Playgroup-B": ["Aryan", "Anaya", "Arjun", "Dev", "Rahul", "Kabir", "Aarav", "Aditi"], "Nursery-A": ["Aarav", "Kabir", "Saanvi", "Krishna", "Pooja", "Riya", "Vivaan", "Aditi"], "Nursery-B": ["Aditi", "Diya", "Anaya", "Sara", "Aryan", "Saanvi", "Aarav", "Myra"], "JrKG-A": ["Krishna", "Ishaan", "Diya", "Rohan", "Aryan", "Riya", "Anaya", "Arjun"], "JrKG-B": ["Dev", "Meera", "Aditi", "Krishna", "Arjun", "Aarav", "Kabir", "Rahul"], "SrKG-A": ["Myra", "Riya", "Ishaan", "Tanvi", "Aarav", "Pooja", "Arjun", "Vivaan"], "SrKG-B": ["Arjun", "Pooja", "Aryan", "Meera", "Myra", "Saanvi", "Riya", "Rohan"], "1-A": ["Myra", "Tanvi", "Kabir", "Arjun", "Krishna", "Aryan", "Ishaan", "Anaya"], "1-B": ["Riya", "Vivaan", "Rohan", "Tanvi", "Aryan", "Rahul", "Meera", "Arjun"], "2-A": ["Arjun", "Riya", "Aditi", "Kabir", "Aarav", "Krishna", "Myra", "Pooja"], "2-B": ["Aarav", "Rahul", "Arjun", "Aditi", "Vivaan", "Kabir", "Sara", "Ishaan"], "3-A": ["Aryan", "Saanvi", "Pooja", "Aditi", "Sara", "Rohan", "Krishna", "Riya"], "3-B": ["Myra", "Diya", "Rohan", "Aditi", "Meera", "Ishaan", "Arjun", "Tanvi"], "4-A": ["Diya", "Kabir", "Aarav", "Aditi", "Pooja", "Krishna", "Tanvi", "Vivaan"], "4-B": ["Krishna", "Riya", "Aryan", "Sara", "Aditi", "Aarav", "Saanvi", "Rahul"], "5-A": ["Saanvi", "Rohan", "Meera", "Kabir", "Sara", "Myra", "Diya", "Aryan"], "5-B": ["Ishaan", "Vivaan", "Rohan", "Riya", "Saanvi", "Kabir", "Arjun", "Aarav"], "6-A": ["Riya", "Myra", "Dev", "Meera", "Anaya", "Aryan", "Sara", "Kabir"], "6-B": ["Vivaan", "Dev", "Myra", "Krishna", "Rohan", "Meera", "Tanvi", "Rahul"], "7-A": ["Aditi", "Aryan", "Arjun", "Riya", "Anaya", "Rahul", "Vivaan", "Aarav"], "7-B": ["Myra", "Anaya", "Pooja", "Rohan", "Arjun", "Aryan", "Tanvi", "Saanvi"], "8-A": ["Anaya", "Rohan", "Tanvi", "Myra", "Krishna", "Kabir", "Dev", "Aryan"], "8-B": ["Krishna", "Arjun", "Diya", "Aditi", "Rahul", "Sara", "Rohan", "Aryan"], "9-A": ["Ishaan", "Aditi", "Rahul", "Aarav", "Pooja", "Sara", "Vivaan", "Anaya"], "9-B": ["Anaya", "Riya", "Pooja", "Rahul", "Aditi", "Sara", "Tanvi", "Diya"], "10-A": ["Rahul", "Arjun", "Vivaan", "Ishaan", "Sara", "Pooja", "Myra", "Dev"], "10-B": ["Rohan", "Arjun", "Meera", "Kabir", "Aarav", "Vivaan", "Aditi", "Myra"], "11-A": ["Arjun", "Ishaan", "Rohan", "Riya", "Pooja", "Krishna", "Anaya", "Vivaan"], "11-B": ["Anaya", "Aarav", "Aditi", "Vivaan", "Arjun", "Krishna", "Rahul", "Dev"], "12-A": ["Aditi", "Tanvi", "Saanvi", "Myra", "Aryan", "Dev", "Riya", "Sara"], "12-B": ["Krishna", "Riya", "Pooja", "Dev", "Diya", "Myra", "Meera", "Kabir"]}
-let history = []
-let homework = []
-let announcements = []
-let logged=false
-let role="guest"
-let captcha=""
+/* =========================
+STUDENT DATABASE
+========================= */
 
-const accounts = {
-"teacher1":{pass:"1234",role:"teacher"},
-"teacher2":{pass:"abcd",role:"teacher"},
-"principal":{pass:"principal",role:"principal"},
-"admin":{pass:"admin123",role:"admin"}
-}
+let students = [
 
-function generateCaptcha(){
-let chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-captcha=""
-for(let i=0;i<6;i++)captcha+=chars[Math.floor(Math.random()*chars.length)]
-document.getElementById("cap").innerText=captcha
-}
+"Aarvi","Swamini","Durva","Ishani K","Ishani S","Paridhi","Manasvini",
+"Shereya","Shravni","Anaya","Dhanshri","Saanvi","Swarda","Hetal",
+"Maanvi","Arohi","Satvida","Aradhya","Lavanya","Grishma",
+"Sairaj","Hriday","Ansh","Gurutva","Anvay","Aksad","Rutvik",
+"Khushal","Siddhart","Rajveer","Ayush","Arimeet","Yash","Dheeraj"
 
-function show(id){
-if(!logged && id!=="home" && id!=="login"){alert("Please login first");return}
-document.querySelectorAll("section").forEach(s=>s.classList.remove("active"))
-document.getElementById(id).classList.add("active")
-}
+]
 
-function login(){
-let u=user.value
-let p=pass.value
-let c=capinput.value
+let studentAttendance = students.map(()=>({p:0,w:0}))
 
-if(accounts[u] && accounts[u].pass===p){
-role=accounts[u].role
-if(role==="teacher" && c!==captcha){alert("Wrong CAPTCHA");generateCaptcha();return}
-logged=true
-show("dashboard")
-}else alert("Wrong login")
-}
+function renderStudents(){
 
-function key(){
-return std.value+"-"+div.value
-}
+let html=""
 
-function loadStudents(){
-let list=studentList
-list.innerHTML=""
-students[key()].forEach(n=>{
-let r=document.createElement("div")
-r.className="student"
-r.innerHTML=n+' <input type="checkbox" class="p">'
-list.appendChild(r)
-})
-}
+students.forEach((name,i)=>{
 
-function saveAttendance(){
-let boxes=document.querySelectorAll(".p")
-let present=0
-boxes.forEach(b=>{if(b.checked)present++})
+let p=studentAttendance[i].p
+let w=studentAttendance[i].w
+let per=w?Math.round((p/w)*100):0
 
-let total=boxes.length
-let absent=total-present
-let percent=Math.round((present/total)*100)
+html+=`
+<tr>
+<td>${i+1}</td>
+<td>${name}</td>
+<td>${p}</td>
+<td>${w}</td>
+<td>${per}%</td>
+<td>
+<button onclick="presentStudent(${i})">P</button>
+<button onclick="absentStudent(${i})">A</button>
+<button onclick="editStudent(${i})">Edit</button>
+<button onclick="deleteStudent(${i})">Delete</button>
+</td>
+</tr>
+`
 
-history.push({
-date:new Date().toLocaleDateString(),
-cls:key(),
-p:present,
-a:absent,
-total:total,
-percent:percent
 })
 
-result.innerText="Total: "+total+" Present: "+present+" Absent: "+absent+" Attendance: "+percent+"%"
+document.getElementById("studentTable").innerHTML=html
 
-updateHistory()
-updateCharts()
-updateOverview()
 }
 
-function updateHistory(){
-historyTable.innerHTML="<tr><th>Date</th><th>Class</th><th>Total</th><th>Present</th><th>Absent</th><th>%</th></tr>"
-history.forEach(r=>{
-historyTable.innerHTML+=`<tr>
-<td>${r.date}</td>
-<td>${r.cls}</td>
-<td>${r.total}</td>
-<td>${r.p}</td>
-<td>${r.a}</td>
-<td>${r.percent}%</td>
-</tr>`
+/* STUDENT FUNCTIONS */
+
+function addStudent(){
+
+let name=document.getElementById("newStudent").value
+
+if(name==="") return
+
+students.push(name)
+studentAttendance.push({p:0,w:0})
+
+renderStudents()
+
+}
+
+function editStudent(i){
+
+let newName=prompt("Student name",students[i])
+
+if(newName) students[i]=newName
+
+renderStudents()
+
+}
+
+function deleteStudent(i){
+
+students.splice(i,1)
+studentAttendance.splice(i,1)
+
+renderStudents()
+
+}
+
+function presentStudent(i){
+
+studentAttendance[i].p++
+studentAttendance[i].w++
+
+renderStudents()
+
+}
+
+function absentStudent(i){
+
+studentAttendance[i].w++
+
+renderStudents()
+
+}
+
+
+/* =========================
+TEACHER DATABASE
+========================= */
+
+let teachers=[
+
+{name:"Sandra Miss",subject:"Geography",class:"6A"},
+{name:"Neeta Miss",subject:"Hindi",class:"6A"},
+{name:"Pratiksha Miss",subject:"Math",class:"6A"},
+{name:"Monali Miss",subject:"Science",class:"6A"},
+{name:"Rupali Miss",subject:"Marathi",class:"6A"},
+{name:"Dipti Miss",subject:"Computer",class:"6A"},
+{name:"Pranita Miss",subject:"Art & Craft",class:"6A"},
+{name:"Zui Miss",subject:"Speech & Drama",class:"6A"},
+{name:"Sameer Sir",subject:"Sports",class:"All"},
+{name:"Rasul Sir",subject:"Sports",class:"All"}
+
+]
+
+let teacherAttendance = teachers.map(()=>({p:0,w:0}))
+
+function renderTeachers(){
+
+let html=""
+
+teachers.forEach((t,i)=>{
+
+let p=teacherAttendance[i].p
+let w=teacherAttendance[i].w
+let per=w?Math.round((p/w)*100):0
+
+html+=`
+<tr>
+<td>${i+1}</td>
+<td>${t.name}</td>
+<td>${t.subject}</td>
+<td>${t.class}</td>
+<td>${p}</td>
+<td>${w}</td>
+<td>${per}%</td>
+<td>
+<button onclick="presentTeacher(${i})">P</button>
+<button onclick="absentTeacher(${i})">A</button>
+<button onclick="editTeacher(${i})">Edit</button>
+<button onclick="deleteTeacher(${i})">Delete</button>
+</td>
+</tr>
+`
+
 })
+
+document.getElementById("teacherTable").innerHTML=html
+
 }
 
-function updateCharts(){
-chart.innerHTML=""
-history.slice(-5).forEach(r=>{
-chart.innerHTML+=`<div>${r.cls} ${r.percent}%</div>
-<div class="bar" style="width:${r.percent}%"></div>`
-})
+/* TEACHER FUNCTIONS */
+
+function addTeacher(){
+
+let name=document.getElementById("tName").value
+let subject=document.getElementById("tSubject").value
+let cls=document.getElementById("tClass").value
+
+if(name==="") return
+
+teachers.push({name:name,subject:subject,class:cls})
+teacherAttendance.push({p:0,w:0})
+
+renderTeachers()
+
 }
 
-function updateOverview(){
-overview.innerHTML=""
-history.slice(-10).forEach(r=>{
-overview.innerHTML+=`<div>${r.cls} – ${r.percent}%</div>`
-})
+function editTeacher(i){
+
+let name=prompt("Teacher name",teachers[i].name)
+let subject=prompt("Subject",teachers[i].subject)
+let cls=prompt("Class",teachers[i].class)
+
+if(name) teachers[i].name=name
+if(subject) teachers[i].subject=subject
+if(cls) teachers[i].class=cls
+
+renderTeachers()
+
 }
 
-function addHomework(){
-let text=hwinput.value
-if(!text)return
-homework.push(text)
-hwinput.value=""
-renderHomework()
+function deleteTeacher(i){
+
+teachers.splice(i,1)
+teacherAttendance.splice(i,1)
+
+renderTeachers()
+
 }
 
-function renderHomework(){
-hwlist.innerHTML=""
-homework.forEach(h=>{hwlist.innerHTML+=`<div>${h}</div>`})
+function presentTeacher(i){
+
+teacherAttendance[i].p++
+teacherAttendance[i].w++
+
+renderTeachers()
+
 }
 
-function resetHomework(){
-homework=[]
-renderHomework()
+function absentTeacher(i){
+
+teacherAttendance[i].w++
+
+renderTeachers()
+
 }
 
-function addAnnouncement(){
-let text=anninput.value
-if(!text)return
-announcements.push(text)
-anninput.value=""
-renderAnnouncements()
-}
 
-function renderAnnouncements(){
-annlist.innerHTML=""
-announcements.forEach(a=>{annlist.innerHTML+=`<div>${a}</div>`})
-}
+/* =========================
+START SYSTEM
+========================= */
 
-function resetAnnouncements(){
-announcements=[]
-renderAnnouncements()
-}
+renderStudents()
+renderTeachers()
 
 </script>
-</head>
-
-<body onload="show('home');generateCaptcha();loadStudents()">
-
-<header>
-<h1>Raika School Management Hub v11.1</h1>
-</header>
-
-<nav>
-<a onclick="show('home')">Home</a>
-<a onclick="show('login')">Login</a>
-<a onclick="show('dashboard')">Dashboard</a>
-<a onclick="show('attendance')">Attendance</a>
-<a onclick="show('history')">History</a>
-<a onclick="show('homework')">Homework</a>
-<a onclick="show('announcements')">Announcements</a>
-<a onclick="show('charts')">Charts</a>
-</nav>
-
-<section id="home" class="active">
-<div class="card">
-<h2>Welcome</h2>
-<p>Raika School Management Hub</p>
-</div>
-</section>
-
-<section id="login">
-<div class="card">
-
-Teacher Accounts<br>
-teacher1 / 1234<br>
-teacher2 / abcd<br><br>
-
-Principal Account<br>
-principal / principal<br><br>
-
-<input id="user" placeholder="Username"><br>
-<input id="pass" type="password" placeholder="Password"><br>
-
-<div class="captcha" id="cap"></div><br>
-<input id="capinput" placeholder="Enter CAPTCHA"><br>
-
-<button onclick="login()">Login</button>
-
-</div>
-</section>
-
-<section id="dashboard">
-<div class="card">
-<h2>School Attendance Overview</h2>
-<div id="overview"></div>
-</div>
-</section>
-
-<section id="attendance">
-<div class="card">
-
-<select id="std" onchange="loadStudents()">
-<option>Playgroup</option><option>Nursery</option><option>JrKG</option><option>SrKG</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
-</select>
-
-<select id="div" onchange="loadStudents()">
-<option>A</option>
-<option>B</option>
-</select>
-
-<div id="studentList"></div>
-
-<button onclick="saveAttendance()">Save Attendance</button>
-
-<h3 id="result"></h3>
-
-</div>
-</section>
-
-<section id="history">
-<div class="card">
-<h2>Attendance History</h2>
-<table id="historyTable"></table>
-</div>
-</section>
-
-<section id="homework">
-<div class="card">
-<h2>Homework</h2>
-<input id="hwinput" placeholder="Homework text">
-<button onclick="addHomework()">Add</button>
-<button onclick="resetHomework()">Reset</button>
-<div id="hwlist"></div>
-</div>
-</section>
-
-<section id="announcements">
-<div class="card">
-<h2>Announcements</h2>
-<input id="anninput" placeholder="Announcement text">
-<button onclick="addAnnouncement()">Add</button>
-<button onclick="resetAnnouncements()">Reset</button>
-<div id="annlist"></div>
-</div>
-</section>
-
-<section id="charts">
-<div class="card">
-<h2>Attendance Charts</h2>
-<div id="chart"></div>
-</div>
-</section>
-<h2>Student Manager</h2>
-
-<input type="text" id="studentName" placeholder="Enter student name">
-<button onclick="addStudent()">Add Student</button>
-
-<br><br>
-
-<input type="text" id="searchBox" placeholder="Search student" onkeyup="searchStudent()">
-
-<ul id="studentList"></ul>
-
-<script>
-
-let students = [];
-
-function addStudent() {
-
-  let name = document.getElementById("studentName").value;
-
-  if(name === "") return;
-
-  students.push(name);
-
-  document.getElementById("studentName").value = "";
-
-  showStudents();
-}
-
-function showStudents(){
-
-  let list = document.getElementById("studentList");
-
-  list.innerHTML = "";
-
-  students.forEach(function(student){
-
-    let li = document.createElement("li");
-
-    li.innerText = student;
-
-    list.appendChild(li);
-
-  });
-
-}
-
-function searchStudent(){
-
-  let input = document.getElementById("searchBox").value.toLowerCase();
-
-  let list = document.getElementById("studentList").getElementsByTagName("li");
-
-  for(let i=0;i<list.length;i++){
-
-    let txt = list[i].innerText.toLowerCase();
-
-    if(txt.includes(input)){
-
-      list[i].style.display = "";
-
-    } else {
-
-      list[i].style.display = "none";
-
-    }
-
-  }
-
-}
-
-</script>
-</body>
-</html>
