@@ -1,10 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Raika School Management Hub</title>
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+background:#f2f2f2;
+}
+
+table{
+margin:auto;
+border-collapse:collapse;
+background:white;
+}
+
+th,td{
+padding:8px;
+border:1px solid black;
+}
+
+button{
+padding:4px 8px;
+margin:2px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Raika School Management Hub</h1>
+
+<h2>Students – Class 6A</h2>
+
+<input id="newStudent" placeholder="Add student">
+<button onclick="addStudent()">Add Student</button>
+
+<br><br>
+
+<table>
+
+<tr>
+<th>Roll</th>
+<th>Name</th>
+<th>Present</th>
+<th>Working</th>
+<th>%</th>
+<th>Actions</th>
+</tr>
+
+<tbody id="studentTable"></tbody>
+
+</table>
+
+<br><br>
+
+<h2>Teacher Database</h2>
+
+<input id="tName" placeholder="Teacher name">
+<input id="tSubject" placeholder="Subject">
+<input id="tClass" placeholder="Class">
+
+<button onclick="addTeacher()">Add Teacher</button>
+
+<br><br>
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Subject</th>
+<th>Class</th>
+<th>Present</th>
+<th>Working</th>
+<th>%</th>
+<th>Actions</th>
+</tr>
+
+<tbody id="teacherTable"></tbody>
+
+</table>
+
+
 <script>
 
-/* =========================
-STUDENT DATABASE
-========================= */
+/* STUDENTS */
 
-let students = [
+let students=[
 
 "Aarvi","Swamini","Durva","Ishani K","Ishani S","Paridhi","Manasvini",
 "Shereya","Shravni","Anaya","Dhanshri","Saanvi","Swarda","Hetal",
@@ -14,7 +102,7 @@ let students = [
 
 ]
 
-let studentAttendance = students.map(()=>({p:0,w:0}))
+let studentAttendance=students.map(()=>({p:0,w:0}))
 
 function renderStudents(){
 
@@ -48,13 +136,11 @@ document.getElementById("studentTable").innerHTML=html
 
 }
 
-/* STUDENT FUNCTIONS */
-
 function addStudent(){
 
 let name=document.getElementById("newStudent").value
 
-if(name==="") return
+if(name==="")return
 
 students.push(name)
 studentAttendance.push({p:0,w:0})
@@ -65,9 +151,9 @@ renderStudents()
 
 function editStudent(i){
 
-let newName=prompt("Student name",students[i])
+let name=prompt("Student name",students[i])
 
-if(newName) students[i]=newName
+if(name)students[i]=name
 
 renderStudents()
 
@@ -100,9 +186,7 @@ renderStudents()
 }
 
 
-/* =========================
-TEACHER DATABASE
-========================= */
+/* TEACHERS */
 
 let teachers=[
 
@@ -119,7 +203,7 @@ let teachers=[
 
 ]
 
-let teacherAttendance = teachers.map(()=>({p:0,w:0}))
+let teacherAttendance=teachers.map(()=>({p:0,w:0}))
 
 function renderTeachers(){
 
@@ -155,15 +239,13 @@ document.getElementById("teacherTable").innerHTML=html
 
 }
 
-/* TEACHER FUNCTIONS */
-
 function addTeacher(){
 
 let name=document.getElementById("tName").value
 let subject=document.getElementById("tSubject").value
 let cls=document.getElementById("tClass").value
 
-if(name==="") return
+if(name==="")return
 
 teachers.push({name:name,subject:subject,class:cls})
 teacherAttendance.push({p:0,w:0})
@@ -178,9 +260,9 @@ let name=prompt("Teacher name",teachers[i].name)
 let subject=prompt("Subject",teachers[i].subject)
 let cls=prompt("Class",teachers[i].class)
 
-if(name) teachers[i].name=name
-if(subject) teachers[i].subject=subject
-if(cls) teachers[i].class=cls
+if(name)teachers[i].name=name
+if(subject)teachers[i].subject=subject
+if(cls)teachers[i].class=cls
 
 renderTeachers()
 
@@ -213,11 +295,12 @@ renderTeachers()
 }
 
 
-/* =========================
-START SYSTEM
-========================= */
+/* START */
 
 renderStudents()
 renderTeachers()
 
 </script>
+
+</body>
+</html>
