@@ -1,46 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Raika School Management Hub</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f2f2;
+text-align:center;
+}
+
+.menu{
+background:#333;
+padding:10px;
+}
+
+.menu button{
+margin:5px;
+padding:8px;
+color:white;
+background:#555;
+border:none;
+}
+
+table{
+margin:auto;
+border-collapse:collapse;
+background:white;
+}
+
+th,td{
+border:1px solid black;
+padding:6px;
+}
+
+.page{
+display:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Raika School Management Hub</h1>
+
+<div class="menu">
+
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('login')">Login</button>
+<button onclick="showPage('dashboard')">Dashboard</button>
+<button onclick="showPage('students')">Students</button>
+<button onclick="showPage('teachers')">Teachers</button>
+<button onclick="showPage('homework')">Homework</button>
+<button onclick="showPage('announcements')">Announcements</button>
+<button onclick="showPage('charts')">Charts</button>
+
+</div>
+
+<!-- HOME -->
+
+<div id="home" class="page">
+
+<h2>Welcome</h2>
+
+Come, Learn, Serve
+
+</div>
+
+<!-- LOGIN -->
+
+<div id="login" class="page">
+
+<h2>Login</h2>
+
+<input id="username" placeholder="username">
+<input id="password" type="password" placeholder="password">
+
+<button onclick="login()">Login</button>
+
+<div id="loginStatus"></div>
+
+</div>
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="page">
+
+<h2>Dashboard</h2>
+
+<div id="stats"></div>
+
+</div>
+
+<!-- STUDENTS -->
+
+<div id="students" class="page">
+
+<h2>Students</h2>
+
+<input id="searchStudent" placeholder="search" onkeyup="searchStudent()">
+
+<br><br>
+
+<input id="newStudent" placeholder="student name">
+<button onclick="addStudent()">Add</button>
+
+<button onclick="undo()">Undo</button>
+<button onclick="redo()">Redo</button>
+
+<table>
+
+<tr>
+<th>Roll</th>
+<th>Name</th>
+<th>Present</th>
+<th>Working</th>
+<th>%</th>
+<th>Actions</th>
+</tr>
+
+<tbody id="studentTable"></tbody>
+
+</table>
+
+</div>
+
+<!-- TEACHERS -->
+
+<div id="teachers" class="page">
+
+<h2>Teachers</h2>
+
+<input id="tName" placeholder="name">
+<input id="tSubject" placeholder="subject">
+<input id="tClass" placeholder="class">
+
+<button onclick="addTeacher()">Add Teacher</button>
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Subject</th>
+<th>Class</th>
+<th>Present</th>
+<th>Working</th>
+<th>%</th>
+<th>Actions</th>
+</tr>
+
+<tbody id="teacherTable"></tbody>
+
+</table>
+
+</div>
+
+<!-- HOMEWORK -->
+
+<div id="homework" class="page">
+
+<h2>Homework</h2>
+
+<input id="hwText" placeholder="homework">
+<button onclick="addHomework()">Add</button>
+
+<ul id="homeworkList"></ul>
+
+</div>
+
+<!-- ANNOUNCEMENTS -->
+
+<div id="announcements" class="page">
+
+<h2>Announcements</h2>
+
+<input id="anText" placeholder="announcement">
+<button onclick="addAnnouncement()">Add</button>
+
+<ul id="announcementList"></ul>
+
+</div>
+
+<!-- CHART -->
+
+<div id="charts" class="page">
+
+<h2>Attendance Chart</h2>
+
+<div id="chartArea"></div>
+
+</div>
+
 <script>
 
-/* ===============================
-STUDENTS DATABASE
-=============================== */
+/* PAGE SYSTEM */
 
-let students = [
-"Aarvi","Swamini","Durva","Ishani K","Ishani S","Paridhi","Manasvini",
-"Shereya","Shravni","Anaya","Dhanshri","Saanvi","Swarda","Hetal",
-"Maanvi","Arohi","Satvida","Aradhya","Lavanya","Grishma",
-"Sairaj","Hriday","Ansh","Gurutva","Anvay","Aksad","Rutvik",
-"Khushal","Siddhart","Rajveer","Ayush","Arimeet","Yash","Dheeraj"
+function showPage(p){
+
+document.querySelectorAll(".page").forEach(x=>x.style.display="none")
+
+document.getElementById(p).style.display="block"
+
+}
+
+showPage("home")
+
+/* LOGIN */
+
+function login(){
+
+let u=username.value
+let p=password.value
+
+if(u==="teacher"&&p==="123")
+loginStatus.innerText="Teacher login"
+
+else if(u==="principal"&&p==="123")
+loginStatus.innerText="Principal login"
+
+else if(u==="admin"&&p==="123")
+loginStatus.innerText="Admin login"
+
+else
+loginStatus.innerText="Wrong login"
+
+}
+
+/* LOCAL STORAGE */
+
+function saveData(){
+
+localStorage.setItem("students",JSON.stringify(students))
+localStorage.setItem("attendance",JSON.stringify(studentAttendance))
+localStorage.setItem("teachers",JSON.stringify(teachers))
+localStorage.setItem("teacherAttendance",JSON.stringify(teacherAttendance))
+localStorage.setItem("homework",JSON.stringify(homework))
+localStorage.setItem("announcements",JSON.stringify(announcements))
+
+}
+
+/* LOAD DATA */
+
+let students=JSON.parse(localStorage.getItem("students"))||[
+"Aarvi","Swamini","Durva","Anaya"
 ]
 
-students.sort()
+let studentAttendance=JSON.parse(localStorage.getItem("attendance"))||
+students.map(()=>({p:0,w:0}))
 
-let studentAttendance = students.map(()=>({p:0,w:0}))
+let teachers=JSON.parse(localStorage.getItem("teachers"))||[
+{name:"Sandra Miss",subject:"Geography",class:"6A"}
+]
 
-let undoStack = []
-let redoStack = []
+let teacherAttendance=JSON.parse(localStorage.getItem("teacherAttendance"))||
+teachers.map(()=>({p:0,w:0}))
+
+let homework=JSON.parse(localStorage.getItem("homework"))||[]
+let announcements=JSON.parse(localStorage.getItem("announcements"))||[]
+
+/* UNDO REDO */
+
+let undoStack=[]
+let redoStack=[]
 
 function saveState(){
+
 undoStack.push(JSON.stringify({students,studentAttendance}))
 redoStack=[]
+
 }
 
-function undo(){
-if(undoStack.length===0) return
-redoStack.push(JSON.stringify({students,studentAttendance}))
-let state = JSON.parse(undoStack.pop())
-students = state.students
-studentAttendance = state.studentAttendance
-renderStudents()
-}
-
-function redo(){
-if(redoStack.length===0) return
-undoStack.push(JSON.stringify({students,studentAttendance}))
-let state = JSON.parse(redoStack.pop())
-students = state.students
-studentAttendance = state.studentAttendance
-renderStudents()
-}
+/* STUDENTS */
 
 function renderStudents(){
 
@@ -48,62 +282,63 @@ students.sort()
 
 let html=""
 
-students.forEach((name,i)=>{
+students.forEach((n,i)=>{
 
 let p=studentAttendance[i].p
 let w=studentAttendance[i].w
 let per=w?Math.round((p/w)*100):0
 
 html+=`
+
 <tr>
 <td>${i+1}</td>
-<td>${name}</td>
+<td>${n}</td>
 <td>${p}</td>
 <td>${w}</td>
 <td>${per}%</td>
 <td>
 <button onclick="presentStudent(${i})">P</button>
 <button onclick="absentStudent(${i})">A</button>
-<button onclick="editStudent(${i})">Edit</button>
 <button onclick="deleteStudent(${i})">Delete</button>
 </td>
 </tr>
+
 `
 
 })
 
-document.getElementById("studentTable").innerHTML = html
+studentTable.innerHTML=html
+
+updateChart()
+updateStats()
+saveData()
+
+}
+
+function searchStudent(){
+
+let s=searchStudent.value.toLowerCase()
+
+document.querySelectorAll("#studentTable tr").forEach(r=>{
+r.style.display=r.innerText.toLowerCase().includes(s)?"":"none"
+})
 
 }
 
 function addStudent(){
 
-let name = document.getElementById("newStudent").value
-if(name==="") return
+let n=newStudent.value
 
-saveState()
+if(!n)return
 
-students.push(name)
+students.push(n)
 studentAttendance.push({p:0,w:0})
 
 renderStudents()
 
 }
 
-function editStudent(i){
-
-saveState()
-
-let name = prompt("Edit name",students[i])
-if(name) students[i]=name
-
-renderStudents()
-
-}
-
 function deleteStudent(i){
-
-saveState()
 
 students.splice(i,1)
 studentAttendance.splice(i,1)
@@ -114,8 +349,6 @@ renderStudents()
 
 function presentStudent(i){
 
-saveState()
-
 studentAttendance[i].p++
 studentAttendance[i].w++
 
@@ -125,34 +358,13 @@ renderStudents()
 
 function absentStudent(i){
 
-saveState()
-
 studentAttendance[i].w++
 
 renderStudents()
 
 }
 
-/* ===============================
-TEACHERS DATABASE
-=============================== */
-
-let teachers=[
-
-{name:"Sandra Miss",subject:"Geography",class:"6A"},
-{name:"Neeta Miss",subject:"Hindi",class:"6A"},
-{name:"Pratiksha Miss",subject:"Math",class:"6A"},
-{name:"Monali Miss",subject:"Science",class:"6A"},
-{name:"Rupali Miss",subject:"Marathi",class:"6A"},
-{name:"Dipti Miss",subject:"Computer",class:"6A"},
-{name:"Pranita Miss",subject:"Art & Craft",class:"6A"},
-{name:"Zui Miss",subject:"Speech & Drama",class:"6A"},
-{name:"Sameer Sir",subject:"Sports",class:"All"},
-{name:"Rasul Sir",subject:"Sports",class:"All"}
-
-]
-
-let teacherAttendance = teachers.map(()=>({p:0,w:0}))
+/* TEACHERS */
 
 function renderTeachers(){
 
@@ -165,6 +377,7 @@ let w=teacherAttendance[i].w
 let per=w?Math.round((p/w)*100):0
 
 html+=`
+
 <tr>
 <td>${i+1}</td>
 <td>${t.name}</td>
@@ -176,51 +389,29 @@ html+=`
 <td>
 <button onclick="presentTeacher(${i})">P</button>
 <button onclick="absentTeacher(${i})">A</button>
-<button onclick="editTeacher(${i})">Edit</button>
-<button onclick="deleteTeacher(${i})">Delete</button>
 </td>
 </tr>
+
 `
 
 })
 
-document.getElementById("teacherTable").innerHTML = html
+teacherTable.innerHTML=html
+
+saveData()
 
 }
 
 function addTeacher(){
 
-let name=document.getElementById("tName").value
-let subject=document.getElementById("tSubject").value
-let cls=document.getElementById("tClass").value
+let n=tName.value
+let s=tSubject.value
+let c=tClass.value
 
-if(name==="") return
+if(!n)return
 
-teachers.push({name:name,subject:subject,class:cls})
+teachers.push({name:n,subject:s,class:c})
 teacherAttendance.push({p:0,w:0})
-
-renderTeachers()
-
-}
-
-function editTeacher(i){
-
-let name=prompt("Teacher name",teachers[i].name)
-let subject=prompt("Subject",teachers[i].subject)
-let cls=prompt("Class",teachers[i].class)
-
-if(name) teachers[i].name=name
-if(subject) teachers[i].subject=subject
-if(cls) teachers[i].class=cls
-
-renderTeachers()
-
-}
-
-function deleteTeacher(i){
-
-teachers.splice(i,1)
-teacherAttendance.splice(i,1)
 
 renderTeachers()
 
@@ -243,11 +434,78 @@ renderTeachers()
 
 }
 
-/* ===============================
-START SYSTEM
-=============================== */
+/* HOMEWORK */
+
+function addHomework(){
+
+let t=hwText.value
+if(!t)return
+
+homework.push(t)
+
+homeworkList.innerHTML=
+homework.map(x=>"<li>"+x+"</li>").join("")
+
+saveData()
+
+}
+
+/* ANNOUNCEMENTS */
+
+function addAnnouncement(){
+
+let t=anText.value
+if(!t)return
+
+announcements.push(t)
+
+announcementList.innerHTML=
+announcements.map(x=>"<li>"+x+"</li>").join("")
+
+saveData()
+
+}
+
+/* CHART */
+
+function updateChart(){
+
+let txt=""
+
+students.forEach((n,i)=>{
+
+let p=studentAttendance[i].p
+let w=studentAttendance[i].w
+let per=w?Math.round((p/w)*100):0
+
+txt+=n+" "+("█".repeat(Math.round(per/10)))+" "+per+"%<br>"
+
+})
+
+chartArea.innerHTML=txt
+
+}
+
+/* DASHBOARD */
+
+function updateStats(){
+
+stats.innerHTML=
+
+"Students: "+students.length+
+"<br>Teachers: "+teachers.length+
+"<br>Homework: "+homework.length+
+"<br>Announcements: "+announcements.length
+
+}
+
+/* START */
 
 renderStudents()
 renderTeachers()
+updateStats()
 
 </script>
+
+</body>
+</html>
