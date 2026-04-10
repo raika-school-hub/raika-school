@@ -1,110 +1,50 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-<title>Raika School Management Hub</title>
-
-<style>
-
-body{
-font-family:Arial;
-text-align:center;
-background:#f2f2f2;
-}
-
-table{
-margin:auto;
-border-collapse:collapse;
-background:white;
-}
-
-th,td{
-padding:8px;
-border:1px solid black;
-}
-
-button{
-padding:4px 8px;
-margin:2px;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<h1>Raika School Management Hub</h1>
-
-<h2>Students – Class 6A</h2>
-
-<input id="newStudent" placeholder="Add student">
-<button onclick="addStudent()">Add Student</button>
-
-<br><br>
-
-<table>
-
-<tr>
-<th>Roll</th>
-<th>Name</th>
-<th>Present</th>
-<th>Working</th>
-<th>%</th>
-<th>Actions</th>
-</tr>
-
-<tbody id="studentTable"></tbody>
-
-</table>
-
-<br><br>
-
-<h2>Teacher Database</h2>
-
-<input id="tName" placeholder="Teacher name">
-<input id="tSubject" placeholder="Subject">
-<input id="tClass" placeholder="Class">
-
-<button onclick="addTeacher()">Add Teacher</button>
-
-<br><br>
-
-<table>
-
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Subject</th>
-<th>Class</th>
-<th>Present</th>
-<th>Working</th>
-<th>%</th>
-<th>Actions</th>
-</tr>
-
-<tbody id="teacherTable"></tbody>
-
-</table>
-
-
 <script>
 
-/* STUDENTS */
+/* ===============================
+STUDENTS DATABASE
+=============================== */
 
-let students=[
-
+let students = [
 "Aarvi","Swamini","Durva","Ishani K","Ishani S","Paridhi","Manasvini",
 "Shereya","Shravni","Anaya","Dhanshri","Saanvi","Swarda","Hetal",
 "Maanvi","Arohi","Satvida","Aradhya","Lavanya","Grishma",
 "Sairaj","Hriday","Ansh","Gurutva","Anvay","Aksad","Rutvik",
 "Khushal","Siddhart","Rajveer","Ayush","Arimeet","Yash","Dheeraj"
-
 ]
 
-let studentAttendance=students.map(()=>({p:0,w:0}))
+students.sort()
+
+let studentAttendance = students.map(()=>({p:0,w:0}))
+
+let undoStack = []
+let redoStack = []
+
+function saveState(){
+undoStack.push(JSON.stringify({students,studentAttendance}))
+redoStack=[]
+}
+
+function undo(){
+if(undoStack.length===0) return
+redoStack.push(JSON.stringify({students,studentAttendance}))
+let state = JSON.parse(undoStack.pop())
+students = state.students
+studentAttendance = state.studentAttendance
+renderStudents()
+}
+
+function redo(){
+if(redoStack.length===0) return
+undoStack.push(JSON.stringify({students,studentAttendance}))
+let state = JSON.parse(redoStack.pop())
+students = state.students
+studentAttendance = state.studentAttendance
+renderStudents()
+}
 
 function renderStudents(){
+
+students.sort()
 
 let html=""
 
@@ -132,15 +72,16 @@ html+=`
 
 })
 
-document.getElementById("studentTable").innerHTML=html
+document.getElementById("studentTable").innerHTML = html
 
 }
 
 function addStudent(){
 
-let name=document.getElementById("newStudent").value
+let name = document.getElementById("newStudent").value
+if(name==="") return
 
-if(name==="")return
+saveState()
 
 students.push(name)
 studentAttendance.push({p:0,w:0})
@@ -151,15 +92,18 @@ renderStudents()
 
 function editStudent(i){
 
-let name=prompt("Student name",students[i])
+saveState()
 
-if(name)students[i]=name
+let name = prompt("Edit name",students[i])
+if(name) students[i]=name
 
 renderStudents()
 
 }
 
 function deleteStudent(i){
+
+saveState()
 
 students.splice(i,1)
 studentAttendance.splice(i,1)
@@ -170,6 +114,8 @@ renderStudents()
 
 function presentStudent(i){
 
+saveState()
+
 studentAttendance[i].p++
 studentAttendance[i].w++
 
@@ -179,14 +125,17 @@ renderStudents()
 
 function absentStudent(i){
 
+saveState()
+
 studentAttendance[i].w++
 
 renderStudents()
 
 }
 
-
-/* TEACHERS */
+/* ===============================
+TEACHERS DATABASE
+=============================== */
 
 let teachers=[
 
@@ -203,7 +152,7 @@ let teachers=[
 
 ]
 
-let teacherAttendance=teachers.map(()=>({p:0,w:0}))
+let teacherAttendance = teachers.map(()=>({p:0,w:0}))
 
 function renderTeachers(){
 
@@ -235,7 +184,7 @@ html+=`
 
 })
 
-document.getElementById("teacherTable").innerHTML=html
+document.getElementById("teacherTable").innerHTML = html
 
 }
 
@@ -245,7 +194,7 @@ let name=document.getElementById("tName").value
 let subject=document.getElementById("tSubject").value
 let cls=document.getElementById("tClass").value
 
-if(name==="")return
+if(name==="") return
 
 teachers.push({name:name,subject:subject,class:cls})
 teacherAttendance.push({p:0,w:0})
@@ -260,9 +209,9 @@ let name=prompt("Teacher name",teachers[i].name)
 let subject=prompt("Subject",teachers[i].subject)
 let cls=prompt("Class",teachers[i].class)
 
-if(name)teachers[i].name=name
-if(subject)teachers[i].subject=subject
-if(cls)teachers[i].class=cls
+if(name) teachers[i].name=name
+if(subject) teachers[i].subject=subject
+if(cls) teachers[i].class=cls
 
 renderTeachers()
 
@@ -294,13 +243,11 @@ renderTeachers()
 
 }
 
-
-/* START */
+/* ===============================
+START SYSTEM
+=============================== */
 
 renderStudents()
 renderTeachers()
 
 </script>
-
-</body>
-</html>
